@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging into ECR
+      - aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 022499048865.dkr.ecr.eu-central-1.amazonaws.com
+
+  build:
+    commands:
+      - echo Building Docker Image..
+      - docker build -t andreea-counter-new .
+      - docker tag andreea-counter-new:latest 022499048865.dkr.ecr.eu-central-1.amazonaws.com/andreea-counter-new:latest
+  post-build:
+    commands:
+      - echo Pushing Dcoker image to ECR...
+      - docker push 022499048865.dkr.ecr.eu-central-1.amazonaws.com/andreea-counter-new:latest
+
+artifacts:
+  files:
+    - '**/*'
